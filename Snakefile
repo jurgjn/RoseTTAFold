@@ -1,9 +1,21 @@
+# snakemake --cores 10 --dry-run
+# snakemake --cores 10 --until wget_uniprot_fasta --dry-run
+
+import pandas as pd
+
+sequence_ids = pd.read_csv("runs/unstructured_dms_tabfix.tsv", sep='\t')['Uniprot ID']
 
 rule all:
     input:
-        "runs/O00244/model/model_1.crderr.pdb",
-        "runs/P42081/model/model_1.crderr.pdb",
-        "runs/Q13148/model/model_1.crderr.pdb",
+        expand("runs/{sequence_id}/model/model_1.crderr.pdb", sequence_id = sequence_ids),
+
+rule wget_uniprot_fasta:
+    output:
+        fasta = "runs/{sequence_id}/{sequence_id}.fasta",
+    shell: """
+        mkdir -p runs/{wildcards.sequence_id}
+        curl https://www.uniprot.org/uniprot/{wildcards.sequence_id}.fasta -o {output.fasta}
+    """
 
 rule run_pyrosetta_ver:
     input:
