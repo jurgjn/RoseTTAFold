@@ -7,15 +7,30 @@ import pandas as pd
 
 rule all:
     input:
-        "results/adhoc/example/model/model_1.crderr.pdb",
+        "results/FIKKs/FIKK3/model/model_1.crderr.pdb",
+        "results/FIKKs_PEXEL/FIKK3/model/model_1.crderr.pdb",
         #expand("results/{prefix}/{sequence_id}/model/model_1.crderr.pdb", sequence_id = sequence_ids),
 
 rule wget_uniprot_fasta:
     output:
-        fasta = "results/{prefix}/{sequence_id}/{sequence_id}.fasta",
+        fasta = "results/adhoc/{sequence_id}/{sequence_id}.fasta",
     shell: """
         mkdir -p runs/{wildcards.sequence_id}
         curl https://www.uniprot.org/uniprot/{wildcards.sequence_id}.fasta -o {output.fasta}
+    """
+
+rule FIKKs_fasta:
+    output:
+        fasta = "results/FIKKs/{sequence_id}/{sequence_id}.fasta",
+    shell: """
+        seqtk subseq results/FIKKs.fasta <(echo "{wildcards.sequence_id}") > {output.fasta}
+    """
+
+rule FIKKs_PEXEL_fasta:
+    output:
+        fasta = "results/FIKKs_PEXEL/{sequence_id}/{sequence_id}.fasta",
+    shell: """
+        seqtk subseq results/FIKKs_PEXEL.fasta <(echo "{wildcards.sequence_id}") > {output.fasta}
     """
 
 rule run_pyrosetta_ver:
