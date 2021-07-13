@@ -3,13 +3,13 @@
 
 import pandas as pd
 
-#sequence_ids = pd.read_csv("runs/unstructured_dms_tabfix.tsv", sep='\t')['Uniprot ID']
+def get_sequence_ids(fp):
+    return [sequence_id for sequence_id in shell("""grep "^>" %s | awk 'sub(/^>/, "")'""" % (fp,), iterable=True)]
 
 rule all:
     input:
-        "results/FIKKs/FIKK3/model/model_1.crderr.pdb",
-        "results/FIKKs_PEXEL/FIKK3/model/model_1.crderr.pdb",
-        #expand("results/{prefix}/{sequence_id}/model/model_1.crderr.pdb", sequence_id = sequence_ids),
+        expand("results/FIKKs/{sequence_id}/model/model_1.crderr.pdb", sequence_id = get_sequence_ids("results/FIKKs.fasta")),
+        expand("results/FIKKs_PEXEL/{sequence_id}/model/model_1.crderr.pdb", sequence_id = get_sequence_ids("results/FIKKs_PEXEL.fasta")),
 
 rule wget_uniprot_fasta:
     output:
