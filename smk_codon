@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Run snakemake on noah in batch mode (except localrules)
+# --jobs 1900
+# By default a user can run at most 2000 jobs at any given time
+# https://sysinf.ebi.ac.uk/doku.php?id=ebi_cluster_good_computing_guide#how_to_use_the_cluster
+# -o and -e
+# Prevents LSF emails being sent for every job
+# Ideally, would like to use wildcards instead of the job id (%J)
+# However, some wildcards currently contain slashes (/) which causes problems
+# --drmaa
+# Error loading drmaa support:
+# Could not find drmaa library.  Please specify its full path using the environment variable DRMAA_LIBRARY_PATH
+# (Installed python package via: conda install -c anaconda drmaa)
+TIMESTAMP=$(date +"%y-%m-%d_%H%M")
+mkdir -p logs/$TIMESTAMP
+time snakemake $@ --jobs 1900 --local-cores $LSB_DJOB_NUMPROC --latency-wait 60 --use-conda --cluster "bsub \
+-n 10 \
+-M 32000 \
+-J {rule} \
+-o logs/$TIMESTAMP/%J_%I_{rule}.stdout.txt \
+-e logs/$TIMESTAMP/%J_%I_{rule}.stderr.txt \
+"
