@@ -15,7 +15,7 @@ TIMESTAMP=$(date +"%y-%m-%d_%H%M")
 mkdir -p logs/$TIMESTAMP
 time snakemake $@ --jobs 1900 --local-cores $LSB_DJOB_NUMPROC --latency-wait 60 --use-conda --cluster "bsub \
 -n 10 \
--M 32000 \
+-M 48000 \
 -J {rule} \
 -o logs/$TIMESTAMP/%J_%I_{rule}.stdout.txt \
 -e logs/$TIMESTAMP/%J_%I_{rule}.stderr.txt \

@@ -41,7 +41,21 @@ rule run_pyrosetta_ver:
     input:
         fa = "results/{prefix}/{sequence_id}/{sequence_id}.fasta",
     output:
-        model_1 = "results/{prefix}/{sequence_id}/model/model_1.crderr.pdb",
+        hhblits = directory("results/{prefix}/{sequence_id}/hhblits"),
+        model = directory("results/{prefix}/{sequence_id}/model"),
+        model1 = "results/{prefix}/{sequence_id}/model/model_1.crderr.pdb",
+        model2 = "results/{prefix}/{sequence_id}/model/model_2.crderr.pdb",
+        model3 = "results/{prefix}/{sequence_id}/model/model_3.crderr.pdb",
+        model4 = "results/{prefix}/{sequence_id}/model/model_4.crderr.pdb",
+        model5 = "results/{prefix}/{sequence_id}/model/model_5.crderr.pdb",
+        pdb_3track = directory("results/{prefix}/{sequence_id}/pdb-3track"),
+        _fold_list = "results/{prefix}/{sequence_id}/parallel.fold.list",
+        _3track_npz = "results/{prefix}/{sequence_id}/t000_.3track.npz",
+        _atab = "results/{prefix}/{sequence_id}/t000_.atab",
+        _hhr = "results/{prefix}/{sequence_id}/t000_.hhr",
+        _msa0_a3m = "results/{prefix}/{sequence_id}/t000_.msa0.a3m",
+        _ss2_a3m = "results/{prefix}/{sequence_id}/t000_.msa0.ss2.a3m",
+        _ss2 = "results/{prefix}/{sequence_id}/t000_.ss2",
     params:
         hhsuite_dir = "/hps/software/users/beltrao/jurgen/RoseTTAFold/software/hhsuite-3.1.0-AVX2-Linux",
     group: "run_pyrosetta_ver"
