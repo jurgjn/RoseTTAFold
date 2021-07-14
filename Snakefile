@@ -1,5 +1,6 @@
 # snakemake --cores 10 --dry-run
 # snakemake --cores 10 --until wget_uniprot_fasta --dry-run
+# ./smk_codon --dry-run
 
 import pandas as pd
 
@@ -14,6 +15,7 @@ rule all:
 rule wget_uniprot_fasta:
     output:
         fasta = "results/adhoc/{sequence_id}/{sequence_id}.fasta",
+    group: "run_pyrosetta_ver"
     shell: """
         mkdir -p runs/{wildcards.sequence_id}
         curl https://www.uniprot.org/uniprot/{wildcards.sequence_id}.fasta -o {output.fasta}
@@ -22,6 +24,7 @@ rule wget_uniprot_fasta:
 rule FIKKs_fasta:
     output:
         fasta = "results/FIKKs/{sequence_id}/{sequence_id}.fasta",
+    group: "run_pyrosetta_ver"
     shell: """
         seqtk subseq results/FIKKs.fasta <(echo "{wildcards.sequence_id}") > {output.fasta}
     """
@@ -29,6 +32,7 @@ rule FIKKs_fasta:
 rule FIKKs_PEXEL_fasta:
     output:
         fasta = "results/FIKKs_PEXEL/{sequence_id}/{sequence_id}.fasta",
+    group: "run_pyrosetta_ver"
     shell: """
         seqtk subseq results/FIKKs_PEXEL.fasta <(echo "{wildcards.sequence_id}") > {output.fasta}
     """
@@ -40,6 +44,7 @@ rule run_pyrosetta_ver:
         model_1 = "results/{prefix}/{sequence_id}/model/model_1.crderr.pdb",
     params:
         hhsuite_dir = "/hps/software/users/beltrao/jurgen/RoseTTAFold/software/hhsuite-3.1.0-AVX2-Linux",
+    group: "run_pyrosetta_ver"
     threads: 10
     shell: """
         export PATH="{params.hhsuite_dir}/bin:{params.hhsuite_dir}/scripts:$PATH"
